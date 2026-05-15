@@ -1,0 +1,10 @@
+services:
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=bdd_proof_finanzaauto'
+      - 'MYSQL_PASSWORD=finanzaauto_2026*'
+      - 'MYSQL_ROOT_PASSWORD=veryfinanzaauto_2026*'
+      - 'MYSQL_USER=admin_proof'
+    ports:
+      - '3306'

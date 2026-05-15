@@ -1,0 +1,43 @@
+name: Spring Boot Kotlin CI
+
+# 1. Cuándo se va a ejecutar este pipeline
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build-and-test:
+    # 2. El entorno donde correrá nuestro código
+    runs-on: ubuntu-latest
+
+    steps:
+      # Paso 1: Clonar el código del repositorio
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Paso 2: Configurar Java (Asumo Java 17, cámbialo a 21 si usas esa versión)
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'gradle' # 💡 Tip Senior: Cachea las dependencias para que no se descarguen en cada push
+
+      # Paso 3: Dar permisos de ejecución al Wrapper de Gradle
+      - name: Otorgar permisos al gradlew
+        run: chmod +x gradlew
+
+      # Paso 4: Ejecutar Tests y Compilar el proyecto
+      - name: Compilar y correr Tests
+        run: ./gradlew build
+
+      # Paso 5: (Opcional) Guardar el JAR generado como un artefacto descargable
+      - name: Subir artefacto (JAR)
+        uses: actions/upload-artifact@v4
+        if: success() # Solo se sube si los tests pasaron
+        with:
+          name: spring-boot-app
+          path: build/libs/*SNAPSHOT.jar
+          retention-days: 7
