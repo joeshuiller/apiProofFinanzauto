@@ -3,6 +3,7 @@ package com.finanzauto.asisya.janes.proof.configuration
 import com.finanzauto.asisya.janes.proof.domain.service.UserDetailsService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -41,6 +42,7 @@ class SecurityConfig(
                         "/swagger-ui.html"
                     ).permitAll()
                     .requestMatchers("/api/v1/users/login", "/api/v1/users/register").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .anyRequest().authenticated()
 
             }
