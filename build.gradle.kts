@@ -36,12 +36,13 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testAnnotationProcessor("org.projectlombok:lombok")
     // JJWT dependencies
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
     // Springdoc OpenAPI for Swagger UI
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
     implementation("io.swagger.core.v3:swagger-annotations:2.2.20")
+    implementation("org.springframework.boot:spring-boot-starter-mail")
 }
 
 kotlin {
@@ -51,9 +52,15 @@ kotlin {
 }
 
 allOpen {
-	annotation("jakarta.persistence.Entity")
-	annotation("jakarta.persistence.MappedSuperclass")
-	annotation("jakarta.persistence.Embeddable")
+	annotation("jakarta.persistence.Entity") // 1. Anotación de entidad (Obligatoria para runtime)
+	annotation("jakarta.persistence.MappedSuperclass") // 2. Anotación de superclase mapeada
+	annotation("jakarta.persistence.Embeddable") // 3. Anotación de embebible
+	annotation("com.fasterxml.jackson.annotation.JsonIgnoreProperties") // 4. Anotación de ignorar propiedades (Obligatoria para runtime)
+	annotation("jakarta.persistence.Converter") // 5. Anotación de convertidor (Obligatoria para runtime)
+	annotation("jakarta.persistence.Table")
+	annotation("jakarta.persistence.Transient")
+	annotation("jakarta.persistence.Column")
+	annotation("jakarta.persistence.JoinColumn")
 }
 
 tasks.withType<Test> {

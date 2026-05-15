@@ -7,9 +7,10 @@ import com.finanzauto.asisya.janes.proof.data.mapper.CategoryMapperService
 import com.finanzauto.asisya.janes.proof.domain.exception.NotFoundException
 import com.finanzauto.asisya.janes.proof.domain.repository.CategoryRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
-
+@Repository
 class CategoryRepository(
     private val category: CrudCategory,
     private val categoryMapper: CategoryMapperService

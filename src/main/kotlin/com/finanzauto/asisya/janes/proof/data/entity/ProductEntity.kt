@@ -38,6 +38,9 @@ data class ProductEntity(
     @Column(name = "UnitPrice", precision = 10, scale = 4)
     var unitPrice: BigDecimal,
 
+    @Column(name = "QuantityPerUnit")
+    var quantityPerUnit: String?,
+
     @Column(name = "UnitsInStock")
     var unitsInStock: Int,
 

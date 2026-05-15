@@ -3,9 +3,10 @@ package com.finanzauto.asisya.janes.proof.data.mapper
 import com.finanzauto.asisya.janes.proof.data.entity.UsersEntity
 import com.finanzauto.asisya.janes.proof.domain.dto.AuthDTO
 import com.finanzauto.asisya.janes.proof.application.request.AuthRequest
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 
-@Service
+@Component
 class UsersMapperService: Mapper<AuthDTO, UsersEntity, AuthRequest> {
     override fun fromEntity(entity: UsersEntity): AuthDTO {
         return AuthDTO(

@@ -1,37 +1,68 @@
 package com.finanzauto.asisya.janes.proof.configuration
 
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.security.Keys
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.ExceptionHandler
 import java.util.Date
-
+import javax.crypto.SecretKey
 
 @Service
 class JwtService {
 
-    private var secret: String = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b"
-    private var expiration: Long = 86400000
+    // 💡 Tip de Senior: En un entorno real, estos valores no deben estar quemados en el código.
+    // Deberían venir del archivo application.yml usando @Value("\${jwt.secret}")
+    private val secret: String = "3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b"
+    private val expiration: Long = 86400000 // 1 día
 
     fun getExpirationTime(): Long = expiration
 
-    fun generateToken(username: String): String =
-        Jwts.builder().setSubject(username).setExpiration(Date(System.currentTimeMillis() + expiration))
-            .signWith(SignatureAlgorithm.HS512, secret.toByteArray()).compact()
+    // 1. JJWT 0.12+ requiere que convirtamos los bytes en un objeto SecretKey
+    private fun getSignInKey(): SecretKey {
+        return Keys.hmacShaKeyFor(secret.toByteArray())
+    }
 
-    private fun getClaims(token: String) =
-        Jwts.parser().setSigningKey(secret.toByteArray()).parseClaimsJws(token).body
+    fun generateToken(username: String): String {
+        val now = System.currentTimeMillis()
 
+        return Jwts.builder()
+            .subject(username) // 👈 'setSubject' cambió a 'subject'
+            .issuedAt(Date(now))
+            .expiration(Date(now + expiration)) // 👈 'setExpiration' cambió a 'expiration'
+            // 👈 'signWith' ahora solo pide la llave. La librería deduce automáticamente el algoritmo (HS512/HS256) por el tamaño de tu llave.
+            .signWith(getSignInKey())
+            .compact()
+    }
 
+    private fun getClaims(token: String): Claims {
+        return Jwts.parser()
+            .verifyWith(getSignInKey()) // 👈 Cambio 1 (Reemplaza a setSigningKey)
+            .build()
+            .parseSignedClaims(token) // 👈 Cambio 2 (Reemplaza a parseClaimsJws)
+            .payload // 👈 Cambio 3 (Reemplaza a body)
+    }
 
-    fun getEmail(token: String): String = getClaims(token).subject
+    fun getEmail(token: String): String {
+        return getClaims(token).subject
+    }
 
-    @ExceptionHandler( ExpiredJwtException::class)
+    // 2. Quitamos el @ExceptionHandler y usamos lógica tradicional
     fun isTokenValid(token: String): Boolean {
-        val claims = getClaims(token)
-        val expirationDate = claims.expiration
-        val now = Date(System.currentTimeMillis())
-        return now.before(expirationDate)
+        return try {
+            val claims = getClaims(token)
+            val expirationDate = claims.expiration
+            val now = Date()
+
+            // Si la fecha actual es ANTES de la fecha de expiración, es válido (true)
+            now.before(expirationDate)
+
+        } catch (e: ExpiredJwtException) {
+            // Si la librería detecta que expiró, lanza este error. Lo atrapamos y decimos que es inválido.
+            false
+        } catch (e: Exception) {
+            // Si el token está malformado, fue alterado, o la firma no coincide
+            false
+        }
     }
 }

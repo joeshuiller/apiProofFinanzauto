@@ -3,7 +3,9 @@ package com.finanzauto.asisya.janes.proof.data.mapper
 import com.finanzauto.asisya.janes.proof.application.request.SupplierRequest
 import com.finanzauto.asisya.janes.proof.application.response.SupplierResponse
 import com.finanzauto.asisya.janes.proof.data.entity.SupplierEntity
+import org.springframework.stereotype.Component
 
+@Component
 class SupplierMapperService  : Mapper<SupplierResponse, SupplierEntity, SupplierRequest> {
     override fun fromEntity(entity: SupplierEntity): SupplierResponse {
         return SupplierResponse(

@@ -4,7 +4,9 @@ import com.finanzauto.asisya.janes.proof.application.request.CategoryRequest
 import com.finanzauto.asisya.janes.proof.application.response.CategoryResponse
 import com.finanzauto.asisya.janes.proof.application.use_case.CategoryUseCase
 import com.finanzauto.asisya.janes.proof.domain.repository.CategoryRepository
+import org.springframework.stereotype.Service
 
+@Service
 class CategoryService(
     private val category: CategoryRepository,
 ): CategoryUseCase {

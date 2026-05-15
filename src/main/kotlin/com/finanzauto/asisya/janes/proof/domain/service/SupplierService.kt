@@ -4,7 +4,9 @@ import com.finanzauto.asisya.janes.proof.application.request.SupplierRequest
 import com.finanzauto.asisya.janes.proof.application.response.SupplierResponse
 import com.finanzauto.asisya.janes.proof.application.use_case.SupplierUseCase
 import com.finanzauto.asisya.janes.proof.domain.repository.SupplierRepository
+import org.springframework.stereotype.Service
 
+@Service
 class SupplierService(
     private val supplier: SupplierRepository,
 ): SupplierUseCase {

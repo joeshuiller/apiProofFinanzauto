@@ -7,7 +7,9 @@ import com.finanzauto.asisya.janes.proof.data.mapper.SupplierMapperService
 import com.finanzauto.asisya.janes.proof.domain.exception.NotFoundException
 import com.finanzauto.asisya.janes.proof.domain.repository.SupplierRepository
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Repository
 
+@Repository
 class SupplierRepository(
     private val supplier: CrudSupplier,
     private val supplierMapper: SupplierMapperService
